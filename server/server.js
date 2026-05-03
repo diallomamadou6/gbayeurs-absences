@@ -17,16 +17,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..')));
 
-// --- SETUP DB (Temporaire pour l'initialisation) ---
-app.get('/setup-db', (req, res) => {
-    const fs = require('fs');
-    const sqlPath = path.join(__dirname, '..', 'schema_mysql.sql');
-    const sql = fs.readFileSync(sqlPath, 'utf8');
+// --- ROUTES ---
 
-    db.query(sql, (err, results) => {
-        if (err) return res.status(500).send("Erreur : " + err.message);
-        res.send("✅ Base de données initialisée avec succès ! Vous pouvez maintenant vous connecter.");
-    });
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
 // --- AUTHENTICATION ---
