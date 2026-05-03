@@ -23,6 +23,33 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
+// --- SEED TEST DATA (Temporaire) ---
+app.get('/seed-test-data', (req, res) => {
+    const sql = `
+        -- Insérer un enseignement
+        INSERT INTO ENSEIGNEMENT (date_seance, horaire, id_enseignant, code_filiere, code_matiere, id_periode)
+        VALUES ('2025-05-01', '08:00:00', 1, 'INFO-L1', 'ALGO-101', 1),
+               ('2025-05-02', '10:00:00', 1, 'INFO-L1', 'ALGO-101', 1)
+        ON DUPLICATE KEY UPDATE date_seance=date_seance;
+        
+        -- Récupérer les ID pour l'appel (on suppose que les étudiants sont 1 et 2, enseignements 1 et 2)
+        INSERT IGNORE INTO ASSISTER (id_etudiant, id_enseignement, statut, date_validation) VALUES
+        (1, 1, 'Présent', CURDATE()),
+        (2, 1, 'Absent', CURDATE()),
+        (1, 2, 'Absent', CURDATE()),
+        (2, 2, 'Absent', CURDATE());
+
+        -- Ajouter une justification pour l'étudiant 2, enseignement 1
+        INSERT IGNORE INTO JUSTIFICATION (id_etudiant, id_enseignement, motif, commentaire, date_justification) VALUES
+        (2, 1, 'Certificat Médical', 'Maladie certifiée par le médecin', NOW());
+    `;
+
+    db.query(sql, (err, results) => {
+        if (err) return res.status(500).send("Erreur : " + err.message);
+        res.send("✅ Données de test (Absences et Justifications) insérées avec succès !");
+    });
+});
+
 // --- AUTHENTICATION ---
 
 app.post('/api/login', (req, res) => {
