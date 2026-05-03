@@ -12,6 +12,7 @@ const pool = mysql.createPool({
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'gestion_absences',
     ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : null,
+    multipleStatements: true,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
