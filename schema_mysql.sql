@@ -1,8 +1,4 @@
--- Script de Modélisation MySQL pour Gbayeurs
--- À importer via phpMyAdmin
-
-CREATE DATABASE IF NOT EXISTS gestion_absences;
-USE gestion_absences;
+-- Script de Modélisation MySQL pour Gbayeurs (Version Cloud Aiven)
 
 -- 1. MODULE PARAMETRAGE
 CREATE TABLE IF NOT EXISTS PERIODE (
@@ -88,48 +84,38 @@ CREATE TABLE IF NOT EXISTS JUSTIFICATION (
     FOREIGN KEY (id_enseignement) REFERENCES ENSEIGNEMENT(id_enseignement) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 3. INSERTION DE DONNÉES DE TEST (MOCK DATA IVOIRIEN)
+-- 3. AUTHENTIFICATION
+CREATE TABLE IF NOT EXISTS UTILISATEUR (
+    id_user INT PRIMARY KEY AUTO_INCREMENT,
+    identifiant VARCHAR(50) UNIQUE NOT NULL,
+    mot_de_pass VARCHAR(255) NOT NULL,
+    nom_complet VARCHAR(100),
+    role ENUM('admin', 'scolarité', 'enseignant') NOT NULL,
+    id_enseignant INT DEFAULT NULL,
+    FOREIGN KEY (id_enseignant) REFERENCES ENSEIGNANT(id_enseignant) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+-- 4. INSERTIONS DE TEST
 INSERT INTO FILIERE (code_filiere, libelle_filiere, niveau, nombre_etudiants) VALUES
 ('INFO-L1', 'Informatique - Licence 1', 'Licence 1', 45),
 ('INFO-L2', 'Informatique - Licence 2', 'Licence 2', 30),
-('DATA-M1', 'Data Science - Master 1', 'Master 1', 25),
-('GEST-L1', 'Gestion - Licence 1', 'Licence 1', 50),
-('RTEL-L2', 'Réseaux & Télécoms - Licence 2', 'Licence 2', 35)
+('DATA-M1', 'Data Science - Master 1', 'Master 1', 25)
 ON DUPLICATE KEY UPDATE code_filiere=code_filiere;
 
-INSERT INTO ENSEIGNANT (nom, prenom, email, specialite, diplome, sexe) VALUES
-('KOUASSI', 'Jean-Marc', 'jm.kouassi@esatic.ci', 'Intelligence Artificielle', 'Doctorat', 'M'),
-('KONAN', 'Ange Roseline', 'a.konan@esatic.ci', 'Gestion et Finance', 'Master', 'F'),
-('OUATTARA', 'Ibrahim', 'i.ouattara@esatic.ci', 'Reseaux et Telecoms', 'Doctorat', 'M'),
-('COULIBALY', 'Mariam', 'm.coulibaly@esatic.ci', 'Droit des Affaires', 'Doctorat', 'F'),
-('N\'GUESSAN', 'Armand', 'a.nguessan@esatic.ci', 'Développement Web', 'Master', 'M')
+INSERT INTO ENSEIGNANT (id_enseignant, nom, prenom, email, specialite, sexe) VALUES
+(1, 'KOUASSI', 'Jean-Marc', 'jm.kouassi@esatic.ci', 'IA', 'M'),
+(2, 'KONAN', 'Ange', 'a.konan@esatic.ci', 'Gestion', 'F')
 ON DUPLICATE KEY UPDATE email=email;
 
-INSERT INTO MATIERE (code_matiere, nom_matiere) VALUES
-('ALGO-101', 'Algorithmique & C++'),
-('BDD-201', 'Bases de Données SQL'),
-('WEB-102', 'Développement Web Frontend'),
-('MATH-101', 'Mathématiques Discrètes'),
-('ECON-101', 'Économie de l\'Entreprise'),
-('RT-201', 'Architecture Réseaux'),
-('PY-301', 'Python pour la Data Science'),
-('ANG-101', 'Anglais Technique')
-ON DUPLICATE KEY UPDATE code_matiere=code_matiere;
+INSERT INTO UTILISATEUR (identifiant, mot_de_pass, nom_complet, role, id_enseignant) VALUES
+('admin', '$2b$10$ABN2n3Qf25o9bGIohtQYfO5dsvZeGZufYlGfpJ6DyS63sJUrdiFnG', 'Administrateur', 'admin', NULL),
+('kouassi', '$2b$10$3uprmhB6jMu8LphLv2LtdO15DruW6eTDFl0nR7iSrBzzwqA.ORapi', 'Prof. KOUASSI', 'enseignant', 1),
+('scol', '$2b$10$eYGY7E7uuPa5E42pPUaNserLizknD35XqMx8z.shiYOkDS8BGiPw6', 'Scolarité ESATIC', 'scolarité', NULL)
+ON DUPLICATE KEY UPDATE identifiant=identifiant;
 
-INSERT INTO PERIODE (id_periode, libelle, date_debut, date_fin) VALUES
-(1, 'Semestre 1 - 2025/2026', '2025-01-01', '2026-06-30'),
-(2, 'Semestre 2 - 2026/2027', '2026-07-01', '2027-12-31')
-ON DUPLICATE KEY UPDATE id_periode=id_periode;
+INSERT INTO MATIERE (code_matiere, nom_matiere) VALUES ('ALGO-101', 'Algorithmique'), ('BDD-201', 'SQL') ON DUPLICATE KEY UPDATE code_matiere=code_matiere;
+INSERT INTO PERIODE (id_periode, libelle, date_debut, date_fin) VALUES (1, 'Semestre 1', '2025-01-01', '2025-06-30') ON DUPLICATE KEY UPDATE id_periode=id_periode;
 
 INSERT INTO ETUDIANT (nom, prenom, sexe, code_filiere) VALUES
-('DIALLO', 'Moussa', 'M', 'INFO-L1'), ('KOFFI', 'Amandine', 'F', 'INFO-L1'),
-('TRAORE', 'Bakary', 'M', 'INFO-L1'), ('YAO', 'Esther', 'F', 'INFO-L1'),
-('BAMBA', 'Souleymane', 'M', 'INFO-L1'), ('SIDIBE', 'Awa', 'F', 'INFO-L1'),
-('CISSE', 'Cheick', 'M', 'INFO-L1'), ('KOUAME', 'Raissa', 'F', 'INFO-L1'),
-('GADEAU', 'Henriette', 'F', 'INFO-L2'), ('SOUMAHORO', 'Lamine', 'M', 'INFO-L2'),
-('OUEDRAOGO', 'Aziz', 'M', 'INFO-L2'), ('TOURE', 'Nabintou', 'F', 'INFO-L2'),
-('COULIBALY', 'Fatoumata', 'F', 'DATA-M1'), ('N\'GORAN', 'Patrick', 'M', 'DATA-M1'),
-('DOUKOUROU', 'Marc', 'M', 'DATA-M1'), ('EHOUMAN', 'Clémence', 'F', 'DATA-M1'),
-('SYLLA', 'Ousmane', 'M', 'GEST-L1'), ('ZADIG', 'Elodie', 'F', 'GEST-L1'),
-('GNAMIEN', 'Arnaud', 'M', 'GEST-L1'), ('ADOU', 'Koffi', 'M', 'RTEL-L2'),
-('KONE', 'Maimouna', 'F', 'RTEL-L2');
+('DIALLO', 'Moussa', 'M', 'INFO-L1'), ('KOFFI', 'Amandine', 'F', 'INFO-L1')
+ON DUPLICATE KEY UPDATE nom=nom;
