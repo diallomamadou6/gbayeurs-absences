@@ -1,0 +1,33 @@
+MySQL
+
+MySQLx
+Service URI
+mysql://
+CLICK_TO:REVEAL_PASSWORD
+@mysql-33350bd3-gestion-absence2.h.aivencloud.com:21798/defaultdb?ssl-mode=REQUIRED
+
+Database name
+defaultdb
+
+Host
+mysql-33350bd3-gestion-absence2.h.aivencloud.com
+
+Port
+21798
+
+User
+avnadmin
+
+Password
+**********
+
+
+
+SSL mode
+REQUIRED
+
+CA certificate
+
+Show
+
+
