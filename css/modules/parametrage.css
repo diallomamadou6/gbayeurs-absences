@@ -1,0 +1,307 @@
+/* ============================================
+   PARAMETRAGE.CSS - Styles du Module 1
+   Adapté pour layout avec sidebar
+   ============================================ */
+
+.parametrage-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.parametrage-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: all 0.3s;
+    border: 1px solid var(--border-color);
+}
+
+.parametrage-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.parametrage-card.full-width {
+    grid-column: 1 / -1;
+}
+
+.card-header {
+    padding: 20px 25px;
+    background: linear-gradient(to right, #f8f9fa, white);
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.card-header .icon {
+    font-size: 1.5rem;
+}
+
+.card-header h3 {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.card-body {
+    padding: 25px;
+}
+
+/* Configuration Summary */
+.config-summary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 0;
+}
+
+.config-summary h4 {
+    margin-bottom: 15px;
+    font-size: 1rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.config-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.config-item:last-child {
+    border-bottom: none;
+}
+
+.config-label {
+    font-weight: 500;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.config-value {
+    font-weight: 600;
+    font-size: 1rem;
+    background: rgba(255,255,255,0.15);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+/* Formulaire */
+.parametrage-form .form-group {
+    margin-bottom: 20px;
+}
+
+.parametrage-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+}
+
+.parametrage-form label .required {
+    color: var(--danger-color);
+    margin-left: 3px;
+}
+
+.parametrage-form .form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    background: white;
+}
+
+.parametrage-form .form-control:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.parametrage-form .form-text {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+/* Historique */
+.history-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.history-list {
+    list-style: none;
+}
+
+.history-item {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.3s;
+    cursor: pointer;
+}
+
+.history-item:hover {
+    background: var(--light-bg);
+}
+
+.history-date {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.history-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.history-action {
+    font-weight: 600;
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+.history-info {
+    font-size: 0.9rem;
+    color: var(--dark-text);
+    text-align: right;
+    max-width: 60%;
+}
+
+.empty-history {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+}
+
+.empty-history-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+/* Animation de sauvegarde */
+@keyframes savePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+.saving {
+    animation: savePulse 0.5s ease;
+}
+
+/* Feedback Message */
+.feedback-message {
+    position: fixed;
+    top: 90px;
+    right: 30px;
+    padding: 15px 25px;
+    border-radius: 12px;
+    background: white;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 1000;
+    animation: slideInRight 0.3s ease;
+    max-width: 400px;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.feedback-success {
+    border-left: 4px solid var(--success-color);
+}
+
+.feedback-error {
+    border-left: 4px solid var(--danger-color);
+}
+
+.feedback-icon {
+    font-size: 1.5rem;
+}
+
+.feedback-content {
+    flex: 1;
+}
+
+.feedback-title {
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.feedback-text {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .parametrage-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .card-header {
+        padding: 15px 20px;
+    }
+    
+    .card-body {
+        padding: 20px;
+    }
+    
+    .config-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .history-details {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .history-info {
+        text-align: left;
+        max-width: 100%;
+    }
+}

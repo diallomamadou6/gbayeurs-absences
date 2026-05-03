@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gbayeurs | Gestion des Absences</title>
+    <meta name="description" content="Solution moderne de gestion des absences pour les établissements scolaires.">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Login Overlay -->
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-card glass-card">
+            <div class="logo-esatic" style="margin-bottom: 2rem;">
+                <img src="assets/images/esatic.jpg" alt="Logo ESATIC" style="width: 100px; height: auto; border-radius: 12px; margin: 0 auto 1rem;">
+                <h1 style="font-size: 1.5rem; color: var(--primary);">Gbayeurs</h1>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Gestion des Absences</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label">Identifiant</label>
+                    <input type="text" id="login-id" class="form-input" placeholder="Ex: admin" required>
+                </div>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label class="form-label">Mot de passe</label>
+                    <input type="password" id="login-pass" class="form-input" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 2rem; justify-content: center; height: 50px;">
+                    Se Connecter
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="app-container hidden" id="app-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo logo-esatic">
+                <div class="esatic-logo-wrapper">
+                    <img 
+                        src="assets/images/esatic.jpg" 
+                        alt="Logo ESATIC" 
+                    >
+                </div>
+                <p class="esatic-subtitle">Gestion des Absences</p>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-label">Principal</div>
+                <a class="nav-link active" data-module="dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a class="nav-link" data-module="parametrage">
+                    <i data-lucide="settings"></i>
+                    <span>Paramétrage</span>
+                </a>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-label">Opérations</div>
+                <a class="nav-link" data-module="saisie">
+                    <i data-lucide="user-plus"></i>
+                    <span>Saisie & Appel</span>
+                </a>
+                <a class="nav-link" data-module="edition">
+                    <i data-lucide="file-text"></i>
+                    <span>Édition & Rapports</span>
+                </a>
+                <a class="nav-link" data-module="justification">
+                    <i data-lucide="check-square"></i>
+                    <span>Justifications</span>
+                </a>
+                <a class="nav-link" data-module="recherche">
+                    <i data-lucide="search"></i>
+                    <span>Recherche Étudiant</span>
+                </a>
+            </div>
+
+            <div style="margin-top: auto;">
+                <a class="nav-link" id="logout-btn" style="cursor: pointer;">
+                    <i data-lucide="log-out"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div class="page-title">
+                    <h1 id="module-title">Dashboard</h1>
+                    <p id="module-subtitle">Bienvenue sur votre espace de gestion.</p>
+                </div>
+                <div class="user-profile">
+                    <!-- Dynamic User Profile could go here -->
+                </div>
+            </header>
+
+            <!-- Dynamic Module Content -->
+            <section id="module-container">
+                <!-- Dashboard (Default View) -->
+                <!-- Dashboard (Default View) -->
+                <div id="dashboard-view" class="view">
+                    <div id="stats-grid" class="grid-container" style="margin-bottom: 2rem;">
+                        <!-- Les cartes de stats seront injectées ici par JS -->
+                    </div>
+
+                    <!-- Graphiques Section -->
+                    <div class="grid-container" style="margin-bottom: 2rem; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
+                        <div class="glass-card">
+                            <h3 style="margin-bottom: 1.5rem; font-size: 1rem; color: var(--text-muted);">
+                                <i data-lucide="bar-chart-3" style="width: 16px;"></i> Absences par Filière
+                            </h3>
+                            <div style="height: 300px; width: 100%;">
+                                <canvas id="chart-absences-filiere"></canvas>
+                            </div>
+                        </div>
+                        <div class="glass-card">
+                            <h3 style="margin-bottom: 1.5rem; font-size: 1rem; color: var(--text-muted);">
+                                <i data-lucide="trending-up" style="width: 16px;"></i> Évolution Hebdomadaire
+                            </h3>
+                            <div style="height: 300px; width: 100%;">
+                                <canvas id="chart-evolution-absences"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: flex-start;">
+                        <div class="glass-card" style="flex: 2; min-width: 400px;">
+                            <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
+                                <i data-lucide="users"></i> Inscriptions Récentes
+                            </h3>
+                            <ul id="recent-students-list" class="entity-list scrollable-list">
+                                <!-- Liste injectée par JS -->
+                            </ul>
+                        </div>
+
+                        <div class="glass-card" style="flex: 1; min-width: 250px;">
+                            <h3 style="margin-bottom: 1.5rem;">Actions Rapides</h3>
+                            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <button class="btn btn-primary" onclick="App.loadModule('saisie')" style="width: 100%;">
+                                    Faire l'appel
+                                </button>
+                                <button class="btn" style="background: var(--card-bg); width: 100%;" onclick="App.loadModule('parametrage')">
+                                    Configurer l'école
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Views for other modules will be injected/shown here -->
+                <div id="parametrage-view" class="view hidden"></div>
+                <div id="saisie-view" class="view hidden"></div>
+                <div id="edition-view" class="view hidden"></div>
+                <div id="justification-view" class="view hidden">
+                    <div class="glass-card">
+                        <h2 style="margin-bottom: 1.5rem;">Liste des Absences à Justifier</h2>
+                        <div id="absences-to-justify" class="grid-container scrollable-list">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="recherche-view" class="view hidden">
+                    <div class="glass-card" style="margin-bottom: 2rem;">
+                        <h2 style="margin-bottom: 1.5rem;">Dossier Étudiant</h2>
+                        <div class="form-group" style="position: relative;">
+                            <i data-lucide="search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 18px;"></i>
+                            <input type="text" id="global-search-input" class="form-input" placeholder="Taper le nom d'un étudiant..." style="padding-left: 45px; height: 55px; font-size: 1.1rem;">
+                        </div>
+                    </div>
+                    <div id="search-results" class="grid-container">
+                        <!-- Résultats injectés ici -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/app.js?v=3"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>

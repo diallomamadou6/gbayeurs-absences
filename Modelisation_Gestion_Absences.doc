@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title>Modélisation Gestion des Absences</title>
+	<meta name="generator" content="LibreOffice 26.2.2.2 (Linux)"/>
+	<meta name="created" content="00:00:00"/>
+	<meta name="changed" content="2026-04-27T11:49:30.842141930"/>
+	<meta name="" content=""/>
+	<style type="text/css">
+		@page { size: 21cm 29.7cm; margin-left: 2cm; margin-right: 1cm; margin-top: 1cm; margin-bottom: 1cm }
+		p { line-height: 115%; margin-bottom: 0.25cm; font-size: 11pt; font-family: "Calibri", "Arial", sans-serif; background: transparent }
+		h1 { color: #2f5496; margin-bottom: 0.21cm; border-top: none; border-bottom: 1px solid #2f5496; border-left: none; border-right: none; padding-top: 0cm; padding-bottom: 0.11cm; padding-left: 0cm; padding-right: 0cm; line-height: 150%; background: transparent; page-break-after: avoid }
+		h1.western { font-weight: bold; font-size: 16pt; font-family: "Liberation Serif", serif }
+		h1.cjk { font-weight: bold; font-size: 16pt; font-family: "Noto Serif CJK SC" }
+		h1.ctl { font-weight: bold; font-family: "Noto Sans Devanagari"; font-size: 16pt }
+		h2 { color: #2f5496; margin-top: 0.53cm; margin-bottom: 0.21cm; line-height: 150%; background: transparent; page-break-after: avoid }
+		h2.western { font-weight: bold; font-size: 13pt; font-family: "Liberation Serif", serif }
+		h2.cjk { font-weight: bold; font-size: 13pt; font-family: "Noto Serif CJK SC" }
+		h2.ctl { font-weight: bold; font-family: "Noto Sans Devanagari"; font-size: 13pt }
+	</style>
+</head>
+<body lang="fr-FR" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+STRUCTURE DES TABLES ET CLÉS</h1>
+<h2 class="western">1. FILIERE</h2>
+<ul>
+	<li><p style="margin-bottom: 0cm"><font color="#c00000"><b>code_filiere
+	(PK)</b></font> : Entier 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">Libele_filiere : Texte 
+	</p></li>
+	<li><p>Nbre_etudiant : Entier 
+	</p></li>
+</ul>
+<h2 class="western">2. MATIERE</h2>
+<ul>
+	<li><p style="margin-bottom: 0cm"><font color="#c00000"><b>code_matiere
+	(PK)</b></font> : Entier 
+	</p></li>
+	<li><p>Nom_matiere : Texte 
+	</p></li>
+</ul>
+<h2 class="western">3. ENSEIGNANT</h2>
+<ul>
+	<li><p style="margin-bottom: 0cm"><font color="#c00000"><b>id_enseignant
+	(PK)</b></font> : Entier 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">Nom : Texte 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">Prenom : Texte 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">Mail : Texte 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">Specialite : Texte 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">Diplome : Texte 
+	</p></li>
+	<li><p>Sexe : Caractère (M/F) 
+	</p></li>
+</ul>
+<h2 class="western">4. PERIODE</h2>
+<ul>
+	<li><p style="margin-bottom: 0cm"><font color="#c00000"><b>id_periode
+	(PK)</b></font> : Entier 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">date_debut : Date 
+	</p></li>
+	<li><p>date_fin : Date 
+	</p></li>
+</ul>
+<h2 class="western">5. ETUDIANT</h2>
+<ul>
+	<li><p style="margin-bottom: 0cm"><font color="#c00000"><b>id_etudiant
+	(PK)</b></font> : Entier 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">Nom : Texte 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">Prenom : Texte 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">Sexe : Caractère (M/F) 
+	</p></li>
+	<li><p><font color="#0070c0"><b>code_filiere (FK)</b></font> :
+	Entier 
+	</p></li>
+</ul>
+<h2 class="western">6. AFFECTATION 
+</h2>
+<ul>
+	<li><p style="margin-bottom: 0cm"><font color="#c00000"><b>id_affectation
+	(PK)</b></font> : Entier 
+	</p></li>
+	<li><p style="margin-bottom: 0cm"><font color="#0070c0"><b>id_enseignant
+	(FK)</b></font> : Entier 
+	</p></li>
+	<li><p style="margin-bottom: 0cm"><font color="#0070c0"><b>code_filiere
+	(FK)</b></font> : Entier 
+	</p></li>
+	<li><p style="margin-bottom: 0cm"><font color="#0070c0"><b>code_matiere
+	(FK)</b></font> : Entier 
+	</p></li>
+	<li><p><font color="#0070c0"><b>id_periode (FK)</b></font> : Entier 
+	</p></li>
+</ul>
+<h2 class="western">7. APPEL_PRESENCE</h2>
+<ul>
+	<li><p style="margin-bottom: 0cm"><font color="#c00000"><b>id (PK)</b></font>
+	: Entier 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">date : Date/Heure 
+	</p></li>
+	<li><p style="margin-bottom: 0cm"><font color="#0070c0"><b>code_filiere
+	(FK)</b></font> : Entier 
+	</p></li>
+	<li><p style="margin-bottom: 0cm"><font color="#0070c0"><b>code_matiere
+	(FK)</b></font> : Entier 
+	</p></li>
+	<li><p style="margin-bottom: 0cm"><font color="#0070c0"><b>id_enseignant
+	(FK)</b></font> : Entier 
+	</p></li>
+	<li><p style="margin-bottom: 0cm"><font color="#0070c0"><b>id_periode
+	(FK)</b></font> : Entier 
+	</p></li>
+	<li><p>absents : Tableau [IDs des étudiants] 
+	</p></li>
+</ul>
+<h2 class="western">8. JUSTIFICATION</h2>
+<ul>
+	<li><p style="margin-bottom: 0cm"><font color="#c00000"><b>id (PK)</b></font>
+	: Entier 
+	</p></li>
+	<li><p style="margin-bottom: 0cm"><font color="#0070c0"><b>attendanceId
+	(FK)</b></font> : Entier (Réfère à APPEL_PRESENCE.id) 
+	</p></li>
+	<li><p style="margin-bottom: 0cm"><font color="#0070c0"><b>studentId
+	(FK)</b></font> : Entier (Réfère à ETUDIANT.id_etudiant) 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">motif : Texte 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">commentaire : Texte 
+	</p></li>
+	<li><p>date : Date/Heure 
+	</p></li>
+</ul>
+<p><br/>
+<br/>
+
+</p>
+<h1 class="western">LES RELATIONS (ASSOCIATIONS)</h1>
+<h2 class="western">1. Filière et Étudiants</h2>
+<ul>
+	<li><p style="margin-bottom: 0cm">Une FILIERE contient <b>1 à
+	plusieurs (1..n)</b> ETUDIANTs. 
+	</p></li>
+	<li><p>Un ETUDIANT appartient à <b>1 et 1 seule (1..1)</b> FILIERE.
+		</p></li>
+</ul>
+<h2 class="western">2. Le Planning (L'Affectation)</h2>
+<p>L'AFFECTATION est le centre nerveux qui relie 4 entités.</p>
+<ul>
+	<li><p style="margin-bottom: 0cm">Un ENSEIGNANT peut avoir <b>0 à
+	plusieurs (0..n)</b> AFFECTATIONs. 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">Une FILIERE peut avoir <b>0 à
+	plusieurs (0..n)</b> AFFECTATIONs. 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">Une MATIERE peut faire l'objet de
+	<b>0 à plusieurs (0..n)</b> AFFECTATIONs. 
+	</p></li>
+	<li><p>Une PERIODE regroupe <b>1 à plusieurs (1..n)</b>
+	AFFECTATIONs. 
+	</p></li>
+</ul>
+<p><i>En résumé : Une Affectation correspond exactement à
+l'attribution d'un Enseignant pour enseigner une Matière précise, à
+une Filière précise, durant une Période précise.</i></p>
+<h2 class="western">3. Les Appels (Feuilles de présence)</h2>
+<ul>
+	<li><p style="margin-bottom: 0cm">Une AFFECTATION (le cours
+	planifié) génère <b>0 à plusieurs (0..n)</b> APPEL_PRESENCEs au
+	fil du temps (à chaque séance). 
+	</p></li>
+	<li><p>Un APPEL_PRESENCE est lié de fait à <b>1 seule</b>
+	combinaison d'Enseignant, Filière, Matière et Période. 
+	</p></li>
+</ul>
+<h2 class="western">4. Les Justifications</h2>
+<ul>
+	<li><p style="margin-bottom: 0cm">Un APPEL_PRESENCE peut recevoir <b>0
+	à plusieurs (0..n)</b> JUSTIFICATIONs (une par élève absent). 
+	</p></li>
+	<li><p style="margin-bottom: 0cm">Un ETUDIANT peut fournir <b>0 à
+	plusieurs (0..n)</b> JUSTIFICATIONs au cours de sa scolarité. 
+	</p></li>
+	<li><p>Une JUSTIFICATION lie exactement <b>1 (1..1)</b> ETUDIANT
+	absent à <b>1 (1..1)</b> APPEL_PRESENCE spécifique. 
+	</p></li>
+</ul>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>
