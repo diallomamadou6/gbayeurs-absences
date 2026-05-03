@@ -99,12 +99,20 @@ CREATE TABLE IF NOT EXISTS UTILISATEUR (
 INSERT INTO FILIERE (code_filiere, libelle_filiere, niveau, nombre_etudiants) VALUES
 ('INFO-L1', 'Informatique - Licence 1', 'Licence 1', 45),
 ('INFO-L2', 'Informatique - Licence 2', 'Licence 2', 30),
-('DATA-M1', 'Data Science - Master 1', 'Master 1', 25)
+('DATA-M1', 'Data Science - Master 1', 'Master 1', 25),
+('RIT-L1', 'Réseaux et Télécoms - Licence 1', 'Licence 1', 40),
+('RIT-L2', 'Réseaux et Télécoms - Licence 2', 'Licence 2', 35),
+('SRIT-M1', 'Sécurité et Réseaux - Master 1', 'Master 1', 20)
 ON DUPLICATE KEY UPDATE code_filiere=code_filiere;
 
 INSERT INTO ENSEIGNANT (id_enseignant, nom, prenom, email, specialite, sexe) VALUES
 (1, 'KOUASSI', 'Jean-Marc', 'jm.kouassi@esatic.ci', 'IA', 'M'),
-(2, 'KONAN', 'Ange', 'a.konan@esatic.ci', 'Gestion', 'F')
+(2, 'KONAN', 'Ange', 'a.konan@esatic.ci', 'Gestion', 'F'),
+(3, 'KAMAGATE', 'Issa', 'i.kamagate@esatic.ci', 'Réseaux', 'M'),
+(4, 'BAMBA', 'Fatou', 'f.bamba@esatic.ci', 'Cybersécurité', 'F'),
+(5, 'TRAORE', 'Mamadou', 'm.traore@esatic.ci', 'Développement Web', 'M'),
+(6, 'KONE', 'Awa', 'a.kone@esatic.ci', 'Mathématiques', 'F'),
+(7, 'YAO', 'Kouadio', 'k.yao@esatic.ci', 'Algorithmique', 'M')
 ON DUPLICATE KEY UPDATE email=email;
 
 INSERT INTO UTILISATEUR (identifiant, mot_de_pass, nom_complet, role, id_enseignant) VALUES
@@ -113,9 +121,34 @@ INSERT INTO UTILISATEUR (identifiant, mot_de_pass, nom_complet, role, id_enseign
 ('scol', '$2b$10$eYGY7E7uuPa5E42pPUaNserLizknD35XqMx8z.shiYOkDS8BGiPw6', 'Scolarité ESATIC', 'scolarité', NULL)
 ON DUPLICATE KEY UPDATE identifiant=identifiant;
 
-INSERT INTO MATIERE (code_matiere, nom_matiere) VALUES ('ALGO-101', 'Algorithmique'), ('BDD-201', 'SQL') ON DUPLICATE KEY UPDATE code_matiere=code_matiere;
+INSERT INTO MATIERE (code_matiere, nom_matiere) VALUES 
+('ALGO-101', 'Algorithmique'), 
+('BDD-201', 'SQL'),
+('WEB-101', 'Développement Web L1'),
+('MATH-101', 'Mathématiques L1'),
+('RES-101', 'Réseaux L1'),
+('CYBER-201', 'Cybersécurité L2')
+ON DUPLICATE KEY UPDATE code_matiere=code_matiere;
+
 INSERT INTO PERIODE (id_periode, libelle, date_debut, date_fin) VALUES (1, 'Semestre 1', '2025-01-01', '2025-06-30') ON DUPLICATE KEY UPDATE id_periode=id_periode;
 
 INSERT INTO ETUDIANT (nom, prenom, sexe, code_filiere) VALUES
-('DIALLO', 'Moussa', 'M', 'INFO-L1'), ('KOFFI', 'Amandine', 'F', 'INFO-L1')
+('DIALLO', 'Moussa', 'M', 'INFO-L1'), 
+('KOFFI', 'Amandine', 'F', 'INFO-L1'),
+('TOURE', 'Ali', 'M', 'INFO-L1'),
+('SYLLA', 'Mariam', 'F', 'INFO-L1'),
+('BAKAYOKO', 'Amadou', 'M', 'INFO-L1'),
+('CISSE', 'Kadiatou', 'F', 'INFO-L1'),
+('COULIBALY', 'Oumar', 'M', 'INFO-L2'),
+('DIABY', 'Aminata', 'F', 'INFO-L2'),
+('FANE', 'Ibrahim', 'M', 'INFO-L2'),
+('SANOGO', 'Lassina', 'M', 'DATA-M1'),
+('OUATTARA', 'Nawa', 'F', 'DATA-M1'),
+('DIOMANDE', 'Drissa', 'M', 'RIT-L1'),
+('BOUA', 'Aya', 'F', 'RIT-L1'),
+('GUEI', 'Hermann', 'M', 'RIT-L1'),
+('KOUADIO', 'Brou', 'M', 'RIT-L2'),
+('N\'GUESSAN', 'Akissi', 'F', 'RIT-L2'),
+('YEO', 'Gnon', 'F', 'SRIT-M1'),
+('SORO', 'Zana', 'M', 'SRIT-M1')
 ON DUPLICATE KEY UPDATE nom=nom;

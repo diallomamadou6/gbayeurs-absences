@@ -132,6 +132,67 @@ app.post('/api/login', (req, res) => {
     });
 });
 
+app.post('/api/register/teacher', async (req, res) => {
+    const { nom, prenom, email, specialite, sexe, identifiant, password } = req.body;
+    
+    if (!nom || !prenom || !email || !identifiant || !password) {
+        return res.status(400).json({ error: "Tous les champs obligatoires doivent être remplis." });
+    }
+
+    try {
+        // Vérifier si l'identifiant existe déjà
+        db.query("SELECT * FROM UTILISATEUR WHERE identifiant = ?", [identifiant], async (err, resultsId) => {
+            if (err) return res.status(500).json({ error: err.message });
+            if (resultsId.length > 0) return res.status(400).json({ error: "Cet identifiant est déjà utilisé." });
+
+            // Vérifier si l'email existe déjà
+            db.query("SELECT * FROM ENSEIGNANT WHERE email = ?", [email], async (err, resultsEmail) => {
+                if (err) return res.status(500).json({ error: err.message });
+                if (resultsEmail.length > 0) return res.status(400).json({ error: "Cet email est déjà utilisé." });
+
+                // 1. Insérer l'enseignant
+                const sqlTeacher = "INSERT INTO ENSEIGNANT (nom, prenom, email, specialite, sexe) VALUES (?, ?, ?, ?, ?)";
+                db.query(sqlTeacher, [nom, prenom, email, specialite, sexe || 'M'], async (err, resultTeacher) => {
+                    if (err) return res.status(500).json({ error: err.message });
+                    const idEnseignant = resultTeacher.insertId;
+
+                    // 2. Hasher le mot de passe
+                    const salt = await bcrypt.genSalt(10);
+                    const hashedPassword = await bcrypt.hash(password, salt);
+
+                    // 3. Créer l'utilisateur
+                    const nomComplet = `Prof. ${nom}`;
+                    const sqlUser = "INSERT INTO UTILISATEUR (identifiant, mot_de_pass, nom_complet, role, id_enseignant) VALUES (?, ?, ?, 'enseignant', ?)";
+                    
+                    db.query(sqlUser, [identifiant, hashedPassword, nomComplet, idEnseignant], (err, resultUser) => {
+                        if (err) return res.status(500).json({ error: err.message });
+
+                        // 4. Générer le token
+                        const token = jwt.sign(
+                            { id: resultUser.insertId, identifiant, role: 'enseignant', id_enseignant: idEnseignant },
+                            SECRET_KEY,
+                            { expiresIn: '24h' }
+                        );
+
+                        res.json({
+                            token,
+                            user: {
+                                id: resultUser.insertId,
+                                identifiant: identifiant,
+                                nom_complet: nomComplet,
+                                role: 'enseignant',
+                                id_enseignant: idEnseignant
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Erreur serveur lors de l'inscription." });
+    }
+});
+
 // Middleware to verify token
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];

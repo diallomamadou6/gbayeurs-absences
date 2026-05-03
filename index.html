@@ -32,6 +32,56 @@
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 2rem; justify-content: center; height: 50px;">
                     Se Connecter
                 </button>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="#" id="show-register-btn" style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">Pas de compte ? S'inscrire (Enseignant)</a>
+                </div>
+            </form>
+
+            <form id="register-form" class="hidden">
+                <h2 style="font-size: 1.2rem; margin-bottom: 1rem; text-align: center;">Inscription Enseignant</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Nom</label>
+                        <input type="text" id="reg-nom" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Prénom</label>
+                        <input type="text" id="reg-prenom" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="reg-email" class="form-input" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Spécialité</label>
+                        <input type="text" id="reg-specialite" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Sexe</label>
+                        <select id="reg-sexe" class="form-input" required>
+                            <option value="M">Masculin</option>
+                            <option value="F">Féminin</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Identifiant (Connexion)</label>
+                        <input type="text" id="reg-id" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" id="reg-pass" class="form-input" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; justify-content: center; height: 50px;">
+                    Créer mon compte
+                </button>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="#" id="show-login-btn" style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">Déjà un compte ? Se connecter</a>
+                </div>
             </form>
         </div>
     </div>

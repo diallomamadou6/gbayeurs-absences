@@ -67,6 +67,15 @@ class DataManager {
         });
         return await response.json();
     }
+
+    static async registerTeacher(data) {
+        const response = await fetch(`${this.API_URL}/register/teacher`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        return await response.json();
+    }
 }
 
 
@@ -197,6 +206,31 @@ const App = {
             this.checkAuth();
         } else {
             this.showToast(result.error || 'Erreur de connexion', 'error');
+        }
+    },
+
+    async handleRegisterTeacher(e) {
+        e.preventDefault();
+        const data = {
+            nom: document.getElementById('reg-nom').value,
+            prenom: document.getElementById('reg-prenom').value,
+            email: document.getElementById('reg-email').value,
+            specialite: document.getElementById('reg-specialite').value,
+            sexe: document.getElementById('reg-sexe').value,
+            identifiant: document.getElementById('reg-id').value,
+            password: document.getElementById('reg-pass').value
+        };
+
+        const result = await DataManager.registerTeacher(data);
+        
+        if (result.token) {
+            localStorage.setItem('gbayeurs_token', result.token);
+            localStorage.setItem('gbayeurs_user', JSON.stringify(result.user));
+            this.user = result.user;
+            this.showToast('Inscription réussie ! Bienvenue.', 'success');
+            this.checkAuth();
+        } else {
+            this.showToast(result.error || 'Erreur lors de l\'inscription', 'error');
         }
     },
 
@@ -366,9 +400,32 @@ const App = {
             });
         });
 
+        const showRegisterBtn = document.getElementById('show-register-btn');
+        const showLoginBtn = document.getElementById('show-login-btn');
         const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+
+        if (showRegisterBtn) {
+            showRegisterBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+            });
+        }
+        if (showLoginBtn) {
+            showLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                registerForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+            });
+        }
+
         if (loginForm) {
             loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+        }
+
+        if (registerForm) {
+            registerForm.addEventListener('submit', (e) => this.handleRegisterTeacher(e));
         }
 
         const logoutBtn = document.getElementById('logout-btn');
