@@ -26,27 +26,60 @@ app.get('/', (req, res) => {
 // --- SEED TEST DATA (Temporaire) ---
 app.get('/seed-test-data', (req, res) => {
     const sql = `
-        -- Insérer un enseignement
+        -- 1. Inscription de plus d'étudiants
+        INSERT INTO ETUDIANT (nom, prenom, sexe, code_filiere) VALUES
+        ('TRAORE', 'Bakary', 'M', 'INFO-L1'), ('YAO', 'Esther', 'F', 'INFO-L1'),
+        ('BAMBA', 'Souleymane', 'M', 'INFO-L1'), ('SIDIBE', 'Awa', 'F', 'INFO-L1'),
+        ('CISSE', 'Cheick', 'M', 'INFO-L1'), ('KOUAME', 'Raissa', 'F', 'INFO-L1'),
+        ('GADEAU', 'Henriette', 'F', 'INFO-L2'), ('SOUMAHORO', 'Lamine', 'M', 'INFO-L2'),
+        ('OUEDRAOGO', 'Aziz', 'M', 'INFO-L2'), ('TOURE', 'Nabintou', 'F', 'INFO-L2'),
+        ('COULIBALY', 'Fatoumata', 'F', 'DATA-M1'), ('N''GORAN', 'Patrick', 'M', 'DATA-M1'),
+        ('DOUKOUROU', 'Marc', 'M', 'DATA-M1'), ('EHOUMAN', 'Clémence', 'F', 'DATA-M1')
+        ON DUPLICATE KEY UPDATE nom=nom;
+
+        -- 2. Plus d'enseignants
+        INSERT INTO ENSEIGNANT (nom, prenom, email, specialite, sexe) VALUES
+        ('OUATTARA', 'Ibrahim', 'i.ouattara@esatic.ci', 'Reseaux et Telecoms', 'M'),
+        ('COULIBALY', 'Mariam', 'm.coulibaly@esatic.ci', 'Droit des Affaires', 'F'),
+        ('N''GUESSAN', 'Armand', 'a.nguessan@esatic.ci', 'Développement Web', 'M')
+        ON DUPLICATE KEY UPDATE email=email;
+
+        -- 3. Affectation (Matière à Filière)
+        INSERT INTO CORRESPONDRE (code_filiere, code_matiere, volume_horaire) VALUES
+        ('INFO-L1', 'ALGO-101', 30),
+        ('INFO-L1', 'BDD-201', 40),
+        ('INFO-L2', 'ALGO-101', 20),
+        ('DATA-M1', 'BDD-201', 50)
+        ON DUPLICATE KEY UPDATE volume_horaire=volume_horaire;
+
+        -- 4. Enseignements (Cours programmés)
         INSERT INTO ENSEIGNEMENT (date_seance, horaire, id_enseignant, code_filiere, code_matiere, id_periode)
-        VALUES ('2025-05-01', '08:00:00', 1, 'INFO-L1', 'ALGO-101', 1),
-               ('2025-05-02', '10:00:00', 1, 'INFO-L1', 'ALGO-101', 1)
+        VALUES 
+        ('2025-05-01', '08:00:00', 1, 'INFO-L1', 'ALGO-101', 1),
+        ('2025-05-02', '10:00:00', 1, 'INFO-L1', 'ALGO-101', 1),
+        ('2025-05-03', '14:00:00', 2, 'INFO-L2', 'BDD-201', 1),
+        ('2025-05-04', '08:00:00', 3, 'DATA-M1', 'ALGO-101', 1)
         ON DUPLICATE KEY UPDATE date_seance=date_seance;
         
-        -- Récupérer les ID pour l'appel (on suppose que les étudiants sont 1 et 2, enseignements 1 et 2)
+        -- 5. Absences et Présences aléatoires
         INSERT IGNORE INTO ASSISTER (id_etudiant, id_enseignement, statut, date_validation) VALUES
-        (1, 1, 'Présent', CURDATE()),
-        (2, 1, 'Absent', CURDATE()),
-        (1, 2, 'Absent', CURDATE()),
-        (2, 2, 'Absent', CURDATE());
+        (1, 1, 'Présent', CURDATE()), (2, 1, 'Absent', CURDATE()),
+        (3, 1, 'Absent', CURDATE()), (4, 1, 'Présent', CURDATE()),
+        (1, 2, 'Absent', CURDATE()), (2, 2, 'Absent', CURDATE()),
+        (3, 2, 'Présent', CURDATE()), (4, 2, 'Absent', CURDATE()),
+        (7, 3, 'Absent', CURDATE()), (8, 3, 'Présent', CURDATE()),
+        (9, 3, 'Absent', CURDATE()), (10, 3, 'Absent', CURDATE());
 
-        -- Ajouter une justification pour l'étudiant 2, enseignement 1
+        -- 6. Justifications
         INSERT IGNORE INTO JUSTIFICATION (id_etudiant, id_enseignement, motif, commentaire, date_justification) VALUES
-        (2, 1, 'Certificat Médical', 'Maladie certifiée par le médecin', NOW());
+        (2, 1, 'Certificat Médical', 'Maladie certifiée par le médecin', NOW()),
+        (3, 1, 'Motif Familial', 'Décès dans la famille', NOW()),
+        (7, 3, 'Panne de transport', 'Accident sur le trajet', NOW());
     `;
 
     db.query(sql, (err, results) => {
         if (err) return res.status(500).send("Erreur : " + err.message);
-        res.send("✅ Données de test (Absences et Justifications) insérées avec succès !");
+        res.send("✅ Données de test (Étudiants, Enseignants, Affectations, Absences) insérées avec succès !");
     });
 });
 
