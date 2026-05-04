@@ -1,7 +1,11 @@
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
 
-dotenv.config();
+const envPath = path.resolve(__dirname, '.env');
+const rootEnvPath = path.resolve(__dirname, '..', '.env');
+dotenv.config({ path: fs.existsSync(envPath) ? envPath : rootEnvPath });
 
 // Configuration de la connexion MySQL
 // Vous pouvez modifier ces valeurs dans un fichier .env

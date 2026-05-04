@@ -1,12 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const fs = require('fs');
 const path = require('path');
 const db = require('./database');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-dotenv.config();
+const envPath = path.resolve(__dirname, '.env');
+const rootEnvPath = path.resolve(__dirname, '..', '.env');
+dotenv.config({ path: fs.existsSync(envPath) ? envPath : rootEnvPath });
 
 const SECRET_KEY = process.env.JWT_SECRET || 'votre_cle_secrete_par_defaut';
 
