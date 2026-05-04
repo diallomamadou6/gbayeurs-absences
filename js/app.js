@@ -157,6 +157,57 @@ const App = {
         }
     },
 
+    showLoginError(message) {
+        const errorEl = document.getElementById('login-error');
+        if (errorEl) errorEl.textContent = message;
+        this.showToast(message, 'error');
+    },
+
+    clearLoginError() {
+        const errorEl = document.getElementById('login-error');
+        if (errorEl) errorEl.textContent = '';
+    },
+
+    showRegisterError(message) {
+        const errorEl = document.getElementById('register-error');
+        if (errorEl) errorEl.textContent = message;
+        this.showToast(message, 'error');
+    },
+
+    clearRegisterError() {
+        const errorEl = document.getElementById('register-error');
+        if (errorEl) errorEl.textContent = '';
+    },
+
+    setLoginButtonState(enabled) {
+        const button = document.getElementById('login-submit');
+        if (button) {
+            button.disabled = !enabled;
+            button.textContent = enabled ? 'Se Connecter' : 'Connexion...';
+        }
+    },
+
+    setRegisterButtonState(enabled) {
+        const button = document.querySelector('#register-form button[type="submit"]');
+        if (button) {
+            button.disabled = !enabled;
+            button.textContent = enabled ? 'Créer mon compte' : 'Création...';
+        }
+    },
+
+    togglePasswordVisibility(inputId, buttonId) {
+        const input = document.getElementById(inputId);
+        const button = document.getElementById(buttonId);
+        if (!input || !button) return;
+        if (input.type === 'password') {
+            input.type = 'text';
+            button.textContent = 'Masquer';
+        } else {
+            input.type = 'password';
+            button.textContent = 'Afficher';
+        }
+    },
+
     updateUserProfile() {
         const container = document.querySelector('.user-profile');
         if (container && this.user) {
@@ -193,44 +244,77 @@ const App = {
 
     async handleLogin(e) {
         e.preventDefault();
-        const identifiant = document.getElementById('login-id').value;
-        const password = document.getElementById('login-pass').value;
+        this.clearLoginError();
 
-        const result = await DataManager.login(identifiant, password);
-        
-        if (result.token) {
-            localStorage.setItem('gbayeurs_token', result.token);
-            localStorage.setItem('gbayeurs_user', JSON.stringify(result.user));
-            this.user = result.user;
-            this.showToast(`Bienvenue, ${result.user.nom_complet || result.user.identifiant}`, 'success');
-            this.checkAuth();
-        } else {
-            this.showToast(result.error || 'Erreur de connexion', 'error');
+        const identifiantEl = document.getElementById('login-id');
+        const passwordEl = document.getElementById('login-pass');
+        const identifiant = identifiantEl?.value.trim();
+        const password = passwordEl?.value;
+
+        if (!identifiant) return this.showLoginError('Veuillez saisir votre identifiant.');
+        if (!password) return this.showLoginError('Veuillez saisir votre mot de passe.');
+
+        this.setLoginButtonState(false);
+        try {
+            const result = await DataManager.login(identifiant, password);
+            if (result.token) {
+                localStorage.setItem('gbayeurs_token', result.token);
+                localStorage.setItem('gbayeurs_user', JSON.stringify(result.user));
+                this.user = result.user;
+                this.showToast(`Bienvenue, ${result.user.nom_complet || result.user.identifiant}`, 'success');
+                this.checkAuth();
+            } else {
+                this.showLoginError(result.error || 'Identifiant ou mot de passe incorrect.');
+            }
+        } catch (error) {
+            this.showLoginError('Erreur lors de la connexion.');
+            console.error('Login error:', error);
+        } finally {
+            this.setLoginButtonState(true);
         }
     },
 
     async handleRegisterTeacher(e) {
         e.preventDefault();
-        const data = {
-            nom: document.getElementById('reg-nom').value,
-            prenom: document.getElementById('reg-prenom').value,
-            email: document.getElementById('reg-email').value,
-            specialite: document.getElementById('reg-specialite').value,
-            sexe: document.getElementById('reg-sexe').value,
-            identifiant: document.getElementById('reg-id').value,
-            password: document.getElementById('reg-pass').value
-        };
+        this.clearRegisterError();
 
-        const result = await DataManager.registerTeacher(data);
-        
-        if (result.token) {
-            localStorage.setItem('gbayeurs_token', result.token);
-            localStorage.setItem('gbayeurs_user', JSON.stringify(result.user));
-            this.user = result.user;
-            this.showToast('Inscription réussie ! Bienvenue.', 'success');
-            this.checkAuth();
-        } else {
-            this.showToast(result.error || 'Erreur lors de l\'inscription', 'error');
+        const nom = document.getElementById('reg-nom').value.trim();
+        const prenom = document.getElementById('reg-prenom').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const specialite = document.getElementById('reg-specialite').value.trim();
+        const sexe = document.getElementById('reg-sexe').value;
+        const identifiant = document.getElementById('reg-id').value.trim();
+        const password = document.getElementById('reg-pass').value;
+
+        if (!nom || !prenom || !email || !specialite || !identifiant || !password) {
+            return this.showRegisterError('Veuillez remplir tous les champs obligatoires.');
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            return this.showRegisterError('Veuillez saisir une adresse email valide.');
+        }
+        if (password.length < 6) {
+            return this.showRegisterError('Le mot de passe doit contenir au moins 6 caractères.');
+        }
+
+        const data = { nom, prenom, email, specialite, sexe, identifiant, password };
+        this.setRegisterButtonState(false);
+
+        try {
+            const result = await DataManager.registerTeacher(data);
+            if (result.token) {
+                localStorage.setItem('gbayeurs_token', result.token);
+                localStorage.setItem('gbayeurs_user', JSON.stringify(result.user));
+                this.user = result.user;
+                this.showToast('Inscription réussie ! Bienvenue.', 'success');
+                this.checkAuth();
+            } else {
+                this.showRegisterError(result.error || 'Erreur lors de l\'inscription.');
+            }
+        } catch (error) {
+            this.showRegisterError('Erreur serveur lors de l\'inscription.');
+            console.error('Register error:', error);
+        } finally {
+            this.setRegisterButtonState(true);
         }
     },
 
@@ -404,12 +488,23 @@ const App = {
         const showLoginBtn = document.getElementById('show-login-btn');
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
+        const toggleLoginPass = document.getElementById('toggle-login-pass');
+        const forgotPasswordBtn = document.getElementById('forgot-password-btn');
 
         if (showRegisterBtn) {
             showRegisterBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 loginForm.classList.add('hidden');
                 registerForm.classList.remove('hidden');
+            });
+        }
+        if (toggleLoginPass) {
+            toggleLoginPass.addEventListener('click', () => this.togglePasswordVisibility('login-pass', 'toggle-login-pass'));
+        }
+        if (forgotPasswordBtn) {
+            forgotPasswordBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.showLoginError('Contactez l\'administrateur pour réinitialiser votre mot de passe.');
             });
         }
         if (showLoginBtn) {
