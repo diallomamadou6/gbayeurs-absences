@@ -25,10 +25,12 @@
                     <label class="form-label" for="login-id">Identifiant</label>
                     <input type="text" id="login-id" class="form-input" placeholder="Ex: admin" autocomplete="username" required>
                 </div>
-                <div class="form-group" style="margin-top: 1rem; position: relative;">
+                <div class="form-group" style="margin-top: 1rem;">
                     <label class="form-label" for="login-pass">Mot de passe</label>
-                    <input type="password" id="login-pass" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
-                    <button type="button" id="toggle-login-pass" style="position: absolute; right: 0.75rem; top: 2.85rem; border: none; background: transparent; color: var(--primary); cursor: pointer; font-size: 0.85rem;">Afficher</button>
+                    <div class="password-wrapper">
+                        <input type="password" id="login-pass" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
+                        <button type="button" id="toggle-login-pass" class="password-toggle">Afficher</button>
+                    </div>
                 </div>
                 <div id="login-error" class="form-error" role="alert" style="color: var(--danger); font-size: 0.9rem; min-height: 1.2rem; margin-top: 0.75rem;"></div>
                 <button type="submit" id="login-submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; justify-content: center; height: 50px;">

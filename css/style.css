@@ -273,6 +273,39 @@ body {
     border-color: var(--primary);
 }
 
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper .form-input {
+    padding-right: 5.5rem;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+    border: none;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--primary);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.password-toggle:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-50%) scale(1.02);
+}
+
+.password-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
 .form-input option {
     background: var(--bg-dark);
     color: var(--text-main);

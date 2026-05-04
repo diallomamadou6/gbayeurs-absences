@@ -130,7 +130,7 @@ INSERT INTO MATIERE (code_matiere, nom_matiere) VALUES
 ('CYBER-201', 'Cybersécurité L2')
 ON DUPLICATE KEY UPDATE code_matiere=code_matiere;
 
-INSERT INTO PERIODE (id_periode, libelle, date_debut, date_fin) VALUES (1, 'Semestre 1', '2025-01-01', '2025-06-30') ON DUPLICATE KEY UPDATE id_periode=id_periode;
+INSERT INTO PERIODE (id_periode, libelle, date_debut, date_fin) VALUES (1, 'Semestre 1', '2026-01-01', '2026-06-30') ON DUPLICATE KEY UPDATE date_fin=VALUES(date_fin), date_debut=VALUES(date_debut);
 
 INSERT INTO ETUDIANT (nom, prenom, sexe, code_filiere) VALUES
 ('DIALLO', 'Moussa', 'M', 'INFO-L1'), 

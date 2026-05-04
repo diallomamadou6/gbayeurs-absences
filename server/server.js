@@ -55,14 +55,19 @@ app.get('/seed-test-data', (req, res) => {
         ('DATA-M1', 'BDD-201', 50)
         ON DUPLICATE KEY UPDATE volume_horaire=volume_horaire;
 
+        -- 0. Périodes
+        INSERT INTO PERIODE (id_periode, libelle, date_debut, date_fin) VALUES
+        (1, 'Semestre 1', '2026-01-01', '2026-06-30')
+        ON DUPLICATE KEY UPDATE date_fin=VALUES(date_fin), date_debut=VALUES(date_debut);
+
         -- 4. Enseignements (Cours programmés)
         INSERT INTO ENSEIGNEMENT (date_seance, horaire, id_enseignant, code_filiere, code_matiere, id_periode)
         VALUES 
-        ('2025-05-01', '08:00:00', 1, 'INFO-L1', 'ALGO-101', 1),
-        ('2025-05-02', '10:00:00', 1, 'INFO-L1', 'ALGO-101', 1),
-        ('2025-05-03', '14:00:00', 2, 'INFO-L2', 'BDD-201', 1),
-        ('2025-05-04', '08:00:00', 3, 'DATA-M1', 'ALGO-101', 1)
-        ON DUPLICATE KEY UPDATE date_seance=date_seance;
+        ('2026-05-01', '08:00:00', 1, 'INFO-L1', 'ALGO-101', 1),
+        ('2026-05-02', '10:00:00', 1, 'INFO-L1', 'ALGO-101', 1),
+        ('2026-05-03', '14:00:00', 2, 'INFO-L2', 'BDD-201', 1),
+        ('2026-05-04', '08:00:00', 3, 'DATA-M1', 'ALGO-101', 1)
+        ON DUPLICATE KEY UPDATE date_seance=VALUES(date_seance);
         
         -- 5. Absences et Présences aléatoires
         INSERT IGNORE INTO ASSISTER (id_etudiant, id_enseignement, statut, date_validation) VALUES
@@ -227,11 +232,34 @@ app.post('/api/majors', (req, res) => {
     });
 });
 
+app.delete('/api/majors/:id', (req, res) => {
+    db.query("DELETE FROM FILIERE WHERE code_filiere = ?", [req.params.id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "Filière supprimée" });
+    });
+});
+
 // Teachers (Enseignants)
 app.get('/api/teachers', (req, res) => {
     db.query("SELECT * FROM ENSEIGNANT", (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(rows);
+    });
+});
+
+app.post('/api/teachers', (req, res) => {
+    const { nom, prenom, email, specialite, sexe } = req.body;
+    const sql = "INSERT INTO ENSEIGNANT (nom, prenom, email, specialite, sexe) VALUES (?, ?, ?, ?, ?)";
+    db.query(sql, [nom, prenom, email, specialite, sexe || 'M'], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "Enseignant ajouté", id: result.insertId });
+    });
+});
+
+app.delete('/api/teachers/:id', (req, res) => {
+    db.query("DELETE FROM ENSEIGNANT WHERE id_enseignant = ?", [req.params.id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "Enseignant supprimé" });
     });
 });
 
@@ -243,11 +271,43 @@ app.get('/api/subjects', (req, res) => {
     });
 });
 
+app.post('/api/subjects', (req, res) => {
+    const { code_matiere, nom_matiere } = req.body;
+    const sql = "INSERT INTO MATIERE (code_matiere, nom_matiere) VALUES (?, ?)";
+    db.query(sql, [code_matiere, nom_matiere], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "Matière ajoutée", code: code_matiere });
+    });
+});
+
+app.delete('/api/subjects/:id', (req, res) => {
+    db.query("DELETE FROM MATIERE WHERE code_matiere = ?", [req.params.id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "Matière supprimée" });
+    });
+});
+
 // Periods (Périodes)
 app.get('/api/periods', (req, res) => {
     db.query("SELECT * FROM PERIODE", (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(rows);
+    });
+});
+
+app.post('/api/periods', (req, res) => {
+    const { libelle, date_debut, date_fin } = req.body;
+    const sql = "INSERT INTO PERIODE (libelle, date_debut, date_fin) VALUES (?, ?, ?)";
+    db.query(sql, [libelle, date_debut, date_fin], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "Période ajoutée", id: result.insertId });
+    });
+});
+
+app.delete('/api/periods/:id', (req, res) => {
+    db.query("DELETE FROM PERIODE WHERE id_periode = ?", [req.params.id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "Période supprimée" });
     });
 });
 
@@ -337,6 +397,13 @@ app.post('/api/correspondances', (req, res) => {
     db.query(sql, [code_filiere, code_matiere, volume_horaire], (err) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ message: "Correspondance ajoutée" });
+    });
+});
+
+app.delete('/api/correspondances/:id', (req, res) => {
+    db.query("DELETE FROM CORRESPONDRE WHERE code_matiere = ?", [req.params.id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "Correspondance supprimée" });
     });
 });
 
@@ -498,6 +565,7 @@ app.get('/api/reports/absences/:periodId', (req, res) => {
     });
 });
 
+// Export PDF pour les rapports
 // Start Server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

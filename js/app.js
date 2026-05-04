@@ -1420,7 +1420,8 @@ const App = {
                 content.innerHTML = '<p style="text-align:center; padding: 1rem; color: var(--danger);">Erreur lors de la génération du rapport.</p>';
             }
         }
-    }
+    },
+
 };
 
 document.addEventListener('DOMContentLoaded', () => App.init());
